@@ -1,41 +1,41 @@
- /*============================================================================
+/*============================================================================
 *
-*    NAME:  solpos00.h
+*    名称:  solpos00.h
 *
-*    Contains:
-*        S_solpos     (computes the solar position and intensity
-*                      from time and place)
-*            INPUTS:     (from posdata)
-*                          year, month, day, hour, minute, second,
-*                          latitude, longitude, timezone, interval
-*            OPTIONAL:   (from posdata; defaults from S_init function)
-*                            press   DEFAULT 1013.0 (standard pressure)
-*                            temp    DEFAULT   10.0 (standard temperature)
-*                            tilt    DEFAULT    0.0 (horizontal panel)
-*                            aspect  DEFAULT  180.0 (South-facing panel)
-*                            sbwid   DEFAULT    7.6 (shadowband width)
-*                            sbrad   DEFAULT   31.7 (shadowband radius)
-*                            sbsky   DEFAULT   0.04 (shadowband sky factor)
+*    包含:
+*        S_solpos     (计算太阳位置和辐射强度
+*                      从时间和地点)
+*            输入:     (从 posdata)
+*                          年、月、日、小时、分钟、秒、
+*                          纬度、经度、时区、间隔
+*            可选:     (从 posdata; 默认值从 S_init 函数)
+*                            压力   默认 1013.0（标准压力）
+*                            温度   默认   10.0（标准温度）
+*                            倾斜度  默认    0.0（水平面）
+*                            方位   默认  180.0（面向南的面板）
+*                            sbwid  默认    7.6（阴影带宽度）
+*                            sbrad  默认   31.7（阴影带半径）
+*                            sbsky  默认   0.04（阴影带天空因子）
 *
-*            OUTPUTS:    (posdata) daynum, amass, ampress, azim, cosinc,
-*                        elevref, etr, etrn, etrtilt, prime,
-*                        sbcf, sretr, ssetr, unprime, zenref
+*            输出:     (posdata) daynum、amass、ampress、azim、cosinc、
+*                        elevref、etr、etrn、etrtilt、prime、
+*                        sbcf、sretr、ssetr、unprime、zenref
 *
-*            RETURNS:   Long int status code (defined in solpos.h)
+*            返回:   长整型状态码（在 solpos.h 中定义）
 *
-*    Usage:
-*         In calling program, along with other 'includes', insert:
+*    用法:
+*         在调用程序中，除了其他 'includes'，插入:
 *
 *              #include "solpos.h"
 *
 *    Martin Rymes
-*    National Renewable Energy Laboratory
-*    25 March 1998
+*    美国国家可再生能源实验室
+*    1998年3月25日
 *----------------------------------------------------------------------------*/
 
 /*============================================================================
 *
-*     Define the function codes
+*     定义函数代码
 *
 *----------------------------------------------------------------------------*/
 #define L_DOY    0x0001
@@ -55,7 +55,7 @@
 
 /*============================================================================
 *
-*     Define the bit-wise masks for each function
+*     定义每个函数的位掩码
 *
 *----------------------------------------------------------------------------*/
 #define S_DOY    ( L_DOY                          )
@@ -76,184 +76,174 @@
 
 /*============================================================================
 *
-*     Enumerate the error codes
-*     (Bit positions are from least significant to most significant)
+*     枚举错误代码
+*     (位位置从最低有效位到最高有效位)
 *
 *----------------------------------------------------------------------------*/
-/*          Code          Bit       Parameter            Range
+/*          代码          位       参数            范围
       ===============     ===  ===================  =============   */
-enum {S_YEAR_ERROR,    /*  0   year                  1950 -  2050   */
-      S_MONTH_ERROR,   /*  1   month                    1 -    12   */
-      S_DAY_ERROR,     /*  2   day-of-month             1 -    31   */
-      S_DOY_ERROR,     /*  3   day-of-year              1 -   366   */
-      S_HOUR_ERROR,    /*  4   hour                     0 -    24   */
-      S_MINUTE_ERROR,  /*  5   minute                   0 -    59   */
-      S_SECOND_ERROR,  /*  6   second                   0 -    59   */
-      S_TZONE_ERROR,   /*  7   time zone              -12 -    12   */
-      S_INTRVL_ERROR,  /*  8   interval (seconds)       0 - 28800   */
-      S_LAT_ERROR,     /*  9   latitude               -90 -    90   */
-      S_LON_ERROR,     /* 10   longitude             -180 -   180   */
-      S_TEMP_ERROR,    /* 11   temperature (deg. C)  -100 -   100   */
-      S_PRESS_ERROR,   /* 12   pressure (millibars)     0 -  2000   */
-      S_TILT_ERROR,    /* 13   tilt                   -90 -    90   */
-      S_ASPECT_ERROR,  /* 14   aspect                -360 -   360   */
-      S_SBWID_ERROR,   /* 15   shadow band width (cm)   1 -   100   */
-      S_SBRAD_ERROR,   /* 16   shadow band radius (cm)  1 -   100   */
-      S_SBSKY_ERROR};  /* 17   shadow band sky factor  -1 -     1   */
+enum {S_YEAR_ERROR,    /*  0   年份                1950 -  2050   */
+    S_MONTH_ERROR,   /*  1   月份                    1 -    12   */
+    S_DAY_ERROR,     /*  2   月份中的天数             1 -    31   */
+    S_DOY_ERROR,     /*  3   年份中的天数             1 -   366   */
+    S_HOUR_ERROR,    /*  4   小时                     0 -    24   */
+    S_MINUTE_ERROR,  /*  5   分钟                   0 -    59   */
+    S_SECOND_ERROR,  /*  6   秒钟                   0 -    59   */
+    S_TZONE_ERROR,   /*  7   时区                -12 -    12   */
+    S_INTRVL_ERROR,  /*  8   间隔（秒）             0 - 28800   */
+    S_LAT_ERROR,     /*  9   纬度               -90 -    90   */
+    S_LON_ERROR,     /* 10   经度             -180 -   180   */
+    S_TEMP_ERROR,    /* 11   温度（摄氏度）  -100 -   100   */
+    S_PRESS_ERROR,   /* 12   压力（毫巴）         0 -  2000   */
+    S_TILT_ERROR,    /* 13   倾斜度             -90 -    90   */
+    S_ASPECT_ERROR,  /* 14   方位              -360 -   360   */
+    S_SBWID_ERROR,   /* 15   阴影带宽度（厘米）    1 -   100   */
+    S_SBRAD_ERROR,   /* 16   阴影带半径（厘米）    1 -   100   */
+    S_SBSKY_ERROR};  /* 17   阴影带天空因子   -1 -     1   */
 
 struct posdata
 {
-  /***** ALPHABETICAL LIST OF COMMON VARIABLES *****/
-                           /* Each comment begins with a 1-column letter code:
-                              I:  INPUT variable
-                              O:  OUTPUT variable
-                              T:  TRANSITIONAL variable used in the algorithm,
-                                  of interest only to the solar radiation
-                                  modelers, and available to you because you
-                                  may be one of them.
+    /***** 常见变量的字母表列表 *****/
+    /* 每个注释以 1 列字母代码开头：
+       I:  输入变量
+       O:  输出变量
+       T:  算法中使用的过渡变量，仅对太阳辐射建模者
+           有兴趣，因为您可能是其中之一，
+           可用于您，因为您
+           可能是其中之一。
 
-                              The FUNCTION column indicates which sub-function
-                              within solpos must be switched on using the
-                              "function" parameter to calculate the desired
-                              output variable.  All function codes are
-                              defined in the solpos.h file.  The default
-                              S_ALL switch calculates all output variables.
-                              Multiple functions may be or'd to create a
-                              composite function switch.  For example,
-                              (S_TST | S_SBCF). Specifying only the functions
-                              for required output variables may allow solpos
-                              to execute more quickly.
+       功能列指示 solpos 中必须使用的子函数
+       通过使用“function”参数来打开开关
+       计算所需的输出变量。所有功能代码都是
+       在 solpos.h 文件中定义的。默认值
+       S_ALL开关计算所有输出变量。
+       可以通过OR功能码来组合多个函数。
+       例如，
+       （S_TST | S_SBCF）。仅指定功能
+       所需的输出变量可能允许 solpos
+       更快地执行。
 
-                              The S_DOY mask works as a toggle between the
-                              input date represented as a day number (daynum)
-                              or as month and day.  To set the switch (to
-                              use daynum input), the function is or'd; to
-                              clear the switch (to use month and day input),
-                              the function is inverted and and'd.
+       S_DOY掩码可在
+       表示为日数（daynum）的输入日期之间切换
+       或作为月份和日期。要设置开关（到
+       使用daynum输入），或作为或'd；要
+       清除开关（使用月份和日期输入），
+       反转并按位与。
 
-                              For example:
-                                  pdat->function |= S_DOY (sets daynum input)
-                                  pdat->function &= ~S_DOY (sets month and day input)
+       例如：
+           pdat->function |= S_DOY（设置daynum输入）
+           pdat->function &= ~S_DOY（设置月份和日期输入）
 
-                              Whichever date form is used, S_solpos will
-                              calculate and return the variables(s) of the
-                              other form.  See the soltest.c program for
-                              other examples. */
+       无论使用哪种日期形式，S_solpos都将
+       计算并返回另一种形式的变量。请参阅soltest.c程序以
+       其他示例。 */
 
-  /* VARIABLE        I/O  Function    Description */
-  /* -------------  ----  ----------  ---------------------------------------*/
+    /* 变量        I/O  功能    描述 */
+    /* -------------  ----  ----------  ---------------------------------------*/
 
-  int   day;       /* I/O: S_DOY      Day of month (May 27 = 27, etc.)
-                                        solpos will CALCULATE this by default,
-                                        or will optionally require it as input
-                                        depending on the setting of the S_DOY
-                                        function switch. */
-  int   daynum;    /* I/O: S_DOY      Day number (day of year; Feb 1 = 32 )
-                                        solpos REQUIRES this by default, but
-                                        will optionally calculate it from
-                                        month and day depending on the setting
-                                        of the S_DOY function switch. */
-  int   function;  /* I:              Switch to choose functions for desired
-                                        output. */
-  int   hour;      /* I:              Hour of day, 0 - 23, DEFAULT = 12 */
-  int   interval;  /* I:              Interval of a measurement period in
-                                        seconds.  Forces solpos to use the
-                                        time and date from the interval
-                                        midpoint. The INPUT time (hour,
-                                        minute, and second) is assumed to
-                                        be the END of the measurement
-                                        interval. */
-  int   minute;    /* I:              Minute of hour, 0 - 59, DEFAULT = 0 */
-  int   month;     /* I/O: S_DOY      Month number (Jan = 1, Feb = 2, etc.)
-                                        solpos will CALCULATE this by default,
-                                        or will optionally require it as input
-                                        depending on the setting of the S_DOY
-                                        function switch. */
-  int   second;    /* I:              Second of minute, 0 - 59, DEFAULT = 0 */
-  int   year;      /* I:              4-digit year (2-digit year is NOT
-                                       allowed */
+    int   day;       /* I/O: S_DOY      月的天数（5月27日=27，等等）
+                                        solpos将默认情况下计算这个，
+                                        或者根据S_DOY的设置，可以选择要求它作为输入
+                                        日期输入为S_DOY功能开关的设置取决于S_DOY。
+                                        */
+    int   daynum;    /* I/O: S_DOY      天数（一年中的日期；2月1日=32）
+                                        solpos默认情况下需要这个，但
+                                        将根据S_DOY功能开关的设置选择性地从
+                                        月和日期计算它。
+                                        */
+    int   function;  /* I:              选择所需输出函数的开关。 */
+    int   hour;      /* I:              一天中的小时，0 - 23，默认 = 12 */
+    int   interval;  /* I:              测量周期的间隔，以秒为单位。
+                                        强制solpos使用
+                                        间隔中点的时间和日期。假定输入时间（小时，
+                                        分钟和秒）是测量的结束
+                                        间隔。 */
+    int   minute;    /* I:              小时的分钟，0 - 59，默认 = 0 */
+    int   month;     /* I/O: S_DOY      月份编号（1月=1，2月=2等）
+                                        solpos将默认情况下计算这个，
+                                        或者根据S_DOY的设置，可以选择要求它作为输入
+                                        日期输入为S_DOY功能开关的设置取决于S_DOY。
+                                        */
+    int   second;    /* I:              分钟的秒数，0 - 59，默认 = 0 */
+    int   year;      /* I:              4位年份（不允许2位年份） */
 
-  /***** FLOATS *****/
+    /***** 浮点数 *****/
 
-  float amass;      /* O:  S_AMASS    Relative optical airmass */
-  float ampress;    /* O:  S_AMASS    Pressure-corrected airmass */
-  float aspect;     /* I:             Azimuth of panel surface (direction it
-                                        faces) N=0, E=90, S=180, W=270,
-                                        DEFAULT = 180 */
-  float azim;       /* O:  S_SOLAZM   Solar azimuth angle:  N=0, E=90, S=180,
+    float amass;      /* O:  S_AMASS    相对光学气团 */
+    float ampress;    /* O:  S_AMASS    压力校正的气团 */
+    float aspect;     /* I:             面板表面的方位角（它的方向
+                                        面向N=0、E=90、S=180、W=270，
+                                        默认 = 180 */
+    float azim;       /* O:  S_SOLAZM   太阳方位角：N=0、E=90、S=180、
                                         W=270 */
-  float cosinc;     /* O:  S_TILT     Cosine of solar incidence angle on
-                                        panel */
-  float coszen;     /* O:  S_REFRAC   Cosine of refraction corrected solar
-                                        zenith angle */
-  float dayang;     /* T:  S_GEOM     Day angle (daynum*360/year-length)
-                                        degrees */
-  float declin;     /* T:  S_GEOM     Declination--zenith angle of solar noon
-                                        at equator, degrees NORTH */
-  float eclong;     /* T:  S_GEOM     Ecliptic longitude, degrees */
-  float ecobli;     /* T:  S_GEOM     Obliquity of ecliptic */
-  float ectime;     /* T:  S_GEOM     Time of ecliptic calculations */
-  float elevetr;    /* O:  S_ZENETR   Solar elevation, no atmospheric
-                                        correction (= ETR) */
-  float elevref;    /* O:  S_REFRAC   Solar elevation angle,
-                                        deg. from horizon, refracted */
-  float eqntim;     /* T:  S_TST      Equation of time (TST - LMT), minutes */
-  float erv;        /* T:  S_GEOM     Earth radius vector
-                                        (multiplied to solar constant) */
-  float etr;        /* O:  S_ETR      Extraterrestrial (top-of-atmosphere)
-                                        W/sq m global horizontal solar
-                                        irradiance */
-  float etrn;       /* O:  S_ETR      Extraterrestrial (top-of-atmosphere)
-                                        W/sq m direct normal solar
-                                        irradiance */
-  float etrtilt;    /* O:  S_TILT     Extraterrestrial (top-of-atmosphere)
-                                        W/sq m global irradiance on a tilted
-                                        surface */
-  float gmst;       /* T:  S_GEOM     Greenwich mean sidereal time, hours */
-  float hrang;      /* T:  S_GEOM     Hour angle--hour of sun from solar noon,
-                                        degrees WEST */
-  float julday;     /* T:  S_GEOM     Julian Day of 1 JAN 2000 minus
-                                        2,400,000 days (in order to regain
-                                        single precision) */
-  float latitude;   /* I:             Latitude, degrees north (south negative) */
-  float longitude;  /* I:             Longitude, degrees east (west negative) */
-  float lmst;       /* T:  S_GEOM     Local mean sidereal time, degrees */
-  float mnanom;     /* T:  S_GEOM     Mean anomaly, degrees */
-  float mnlong;     /* T:  S_GEOM     Mean longitude, degrees */
-  float rascen;     /* T:  S_GEOM     Right ascension, degrees */
-  float press;      /* I:             Surface pressure, millibars, used for
-                                        refraction correction and ampress */
-  float prime;      /* O:  S_PRIME    Factor that normalizes Kt, Kn, etc. */
-  float sbcf;       /* O:  S_SBCF     Shadow-band correction factor */
-  float sbwid;      /* I:             Shadow-band width (cm) */
-  float sbrad;      /* I:             Shadow-band radius (cm) */
-  float sbsky;      /* I:             Shadow-band sky factor */
-  float solcon;     /* I:             Solar constant (NREL uses 1367 W/sq m) */
-  float ssha;       /* T:  S_SRHA     Sunset(/rise) hour angle, degrees */
-  float sretr;      /* O:  S_SRSS     Sunrise time, minutes from midnight,
-                                        local, WITHOUT refraction */
-  float ssetr;      /* O:  S_SRSS     Sunset time, minutes from midnight,
-                                        local, WITHOUT refraction */
-  float temp;       /* I:             Ambient dry-bulb temperature, degrees C,
-                                        used for refraction correction */
-  float tilt;       /* I:             Degrees tilt from horizontal of panel */
-  float timezone;   /* I:             Time zone, east (west negative).
-                                      USA:  Mountain = -7, Central = -6, etc. */
-  float tst;        /* T:  S_TST      True solar time, minutes from midnight */
-  float tstfix;     /* T:  S_TST      True solar time - local standard time */
-  float unprime;    /* O:  S_PRIME    Factor that denormalizes Kt', Kn', etc. */
-  float utime;      /* T:  S_GEOM     Universal (Greenwich) standard time */
-  float zenetr;     /* T:  S_ZENETR   Solar zenith angle, no atmospheric
-                                        correction (= ETR) */
-  float zenref;     /* O:  S_REFRAC   Solar zenith angle, deg. from zenith,
-                                        refracted */
+    float cosinc;     /* O:  S_TILT     太阳入射角的余弦值
+                                        在面板上 */
+    float coszen;     /* O:  S_REFRAC   修正后的太阳天顶角的余弦值 */
+    float dayang;     /* T:  S_GEOM     天角（daynum*360/year-length）
+                                        度 */
+    float declin;     /* T:  S_GEOM     赤纬-在赤道太阳正午的天顶角，度NORTH */
+    float eclong;     /* T:  S_GEOM     黄道经度，度 */
+    float ecobli;     /* T:  S_GEOM     黄道的倾斜度 */
+    float ectime;     /* T:  S_GEOM     黄道计算的时间 */
+    float elevetr;    /* O:  S_ZENETR   太阳高度，无大气
+                                        修正（= ETR） */
+    float elevref;    /* O:  S_REFRAC   太阳高度角，
+                                        从地平线度，折射 */
+    float eqntim;     /* T:  S_TST      时间方程（TST - LMT），分钟 */
+    float erv;        /* T:  S_GEOM     地球半径矢量
+                                        （乘以太阳常数） */
+    float etr;        /* O:  S_ETR      太阳辐射外大气（大气顶部）
+                                        W/平方米的全球水平太阳
+                                        辐射 */
+    float etrn;       /* O:  S_ETR      太阳辐射外大气（大气顶部）
+                                        W/平方米的直接法线太阳
+                                        辐射 */
+    float etrtilt;    /* O:  S_TILT     太阳辐射外大气（大气顶部）
+                                        W/平方米的倾斜的全球辐射
+                                        表面 */
+    float gmst;       /* T:  S_GEOM     格林威治平均恒星时，小时 */
+    float hrang;      /* T:  S_GEOM     时间角-从太阳正午到太阳小时，
+                                        西度 */
+    float julday;     /* T:  S_GEOM     1月1日2000日的儒略日
+                                        减去2,400,000天（以恢复
+                                        单精度） */
+    float latitude;   /* I:             纬度，度北（南为负） */
+    float longitude;  /* I:             经度，东经度（西经度为负） */
+    float lmst;       /* T:  S_GEOM     当地的平均恒星时，度 */
+    float mnanom;     /* T:  S_GEOM     平均偏差，度 */
+    float mnlong;     /* T:  S_GEOM     平均经度，度 */
+    float rascen;     /* T:  S_GEOM     赤经，度 */
+    float press;      /* I:             表面压力，毫巴，用于
+                                        折射校正和ampress */
+    float prime;      /* O:  S_PRIME    归一化Kt，Kn等的因子 */
+    float sbcf;       /* O:  S_SBCF     阴影带校正因子 */
+    float sbwid;      /* I:             阴影带宽度（厘米） */
+    float sbrad;      /* I:             阴影带半径（厘米） */
+    float sbsky;      /* I:             阴影带天空因子 */
+    float solcon;     /* I:             太阳常数（NREL使用1367 W/平方米） */
+    float ssha;       /* T:  S_SRHA     太阳日落（/rise）时间角，度 */
+    float sretr;      /* O:  S_SRSS     日出时间，距午夜分钟，
+                                        地方，无折射 */
+    float ssetr;      /* O:  S_SRSS     日落时间，距午夜分钟，
+                                        地方，无折射 */
+    float temp;       /* I:             环境干球温度，摄氏度，
+                                        用于折射校正 */
+    float tilt;       /* I:             平面倾斜度，与水平面的度数 */
+    float timezone;   /* I:             时区，东经（西经为负）。
+                                      美国：山地 = -7，中部 = -6，等等。 */
+    float tst;        /* T:  S_TST      真太阳时间，距午夜分钟 */
+    float tstfix;     /* T:  S_TST      真太阳时间 - 当地标准时间 */
+    float unprime;    /* O:  S_PRIME    去标准化的因子Kt'，Kn'等 */
+    float utime;      /* T:  S_GEOM     通用（格林威治）标准时间 */
+    float zenetr;     /* T:  S_ZENETR   太阳天顶角，无大气
+                                        修正（= ETR） */
+    float zenref;     /* O:  S_REFRAC   太阳天顶角，从顶点度，
+                                        折射 */
 };
 
-/* For users that wish to access individual functions, the following table
-lists all output and transition variables, the L_ mask for the function
-that calculates them, and all the input variables required by that function.
-The function variable is set to the L_ mask, which will force S_solpos to
-only call the required function.  L_ masks may be ORed as desired.
+/* 对于希望访问单独功能的用户，下表列出了所有输出和过渡变量，
+函数的L_掩码，以及该函数所需的所有输入变量。
+将功能变量设置为L_掩码，将强制S_solpos只调用所需的函数。可以OR功能码如所需。
 
 VARIABLE      Mask       Required Variables
 ---------  ----------  ---------------------------------------
@@ -296,70 +286,45 @@ VARIABLE      Mask       Required Variables
 
 
 /*============================================================================
-*    Long int function S_solpos, adapted from the NREL VAX solar libraries
+*    Long int function S_solpos，改编自NREL VAX太阳库
 *
-*    This function calculates the apparent solar position and intensity
-*    (theoretical maximum solar energy) based on the date, time, and
-*    location on Earth. (DEFAULT values are from the optional S_posinit
-*    function.)
+*    此函数根据地球上的日期、时间和
+*    太阳位置和光强（理论上的最大太阳能）。
+*    （DEFAULT值来自可选的S_posinit函数。）
 *
-*    Requires:
-*        Date and time:
+*    需要：
+*        日期和时间：
 *            year
-*            month  (optional without daynum)
-*            day    (optional without daynum)
-*            daynum
+*            month（作为月份或日号）
+*            day（作为月份或日号）
 *            hour
 *            minute
 *            second
-*        Location:
-*            latitude
-*            longitude
-*        Location/time adjuster:
-*            timezone
-*        Atmospheric pressure and temperature:
-*            press     DEFAULT 1013.0 mb
-*            temp      DEFAULT 10.0 degrees C
-*        Tilt of flat surface that receives solar energy:
-*            aspect    DEFAULT 180 (South)
-*            tilt      DEFAULT 0 (Horizontal)
-*        Shadow band parameters:
-*            sbwid     DEFAULT 7.6 cm
-*            sbrad     DEFAULT 31.7 cm
-*            sbsky     DEFAULT 0.04
-*        Functionality
-*            function  DEFAULT S_ALL (all output parameters computed)
+*            interval（间隔（秒））
+*            timezone（小时）
+*            longitude（度）（东经为正，西经为负）
+*            latitude（度）（北纬为正，南纬为负）
+*            temp（环境干球温度，摄氏度）
+*            press（表面压力，毫巴）
+*            tilt（平面倾斜度，度，为平，=90为垂直）
+*            aspect（平面的方位，度，从北（=0，=360））
+*            sbwid（阴影带宽度，厘米）
+*            sbrad（阴影带半径，厘米）
+*            sbsky（阴影带天空因子）
 *
-*    Returns:
-*        everything defined at the top of this listing.
-*----------------------------------------------------------------------------*/
-long S_solpos (struct posdata *pdat);
-
-/*============================================================================
-*    Void function S_init
-*
-*    This function initiates all of the input functions to S_Solpos().
-*    NOTE: This function is optional if you initialize all input parameters
-*          in your calling code.
-*
-*    Requires: Pointer to a posdata structure, members of which are
-*           initialized.
-*
-*    Returns: Void
+*            功能（选项）：
+*            amass     相对光学质量
+*            ampress   气团相对质量
+*            azim      方位角（从北=0，逆时针为正）
+*            cosinc    太阳入射角的余弦值
+*            elevref   太阳高度角，从地平线度，折射
+*            etr       太阳辐射外大气（大气顶部） W/sq m
+*            etrn      太阳辐射外大气（大气顶部） W/sq m
+*            etrtilt   太阳辐射外大气（大气顶部） W/sq m
+*            sbcf      阴影带校正因子
+*            sretr     无折射的日出时间
+*            ssetr     无折射的日落时间
+*            unprime   去标准化Kt, Kn等的因子
+*            zenref    太阳高度角，从顶点度，折射
 *
 *----------------------------------------------------------------------------*/
-void S_init(struct posdata *pdat);
-
-
-/*============================================================================
-*    Void function S_decode
-*
-*    This function decodes the error codes from S_solpos return value
-*
-*    INPUTS: Long integer S_solpos return value, struct posdata*
-*
-*    OUTPUTS: Descriptive text of errors to stderr
-*----------------------------------------------------------------------------*/
-void S_decode(long code, struct posdata *pdat);
-
-
